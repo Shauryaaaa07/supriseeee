@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For Her 🖤</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --text:#fff;--muted:rgba(255,255,255,.75);
+      --border:rgba(255,255,255,.15);
+      --pink:#ff74b5;--rose:#ff9ecf;--lav:#b79cff;--sky:#83dcff;--gold:#ffd98f;
+      --shadow:0 24px 80px rgba(0,0,0,.42);
+      --soft:0 14px 42px rgba(0,0,0,.28);
+    }
+
+    body{
+      font-family:Inter,sans-serif;
+      color:var(--text);
+      min-height:100vh;
+      overflow-x:hidden;
+      background:
+        radial-gradient(circle at 10% 20%,rgba(255,116,181,.22),transparent 22%),
+        radial-gradient(circle at 85% 15%,rgba(183,156,255,.22),transparent 24%),
+        radial-gradient(circle at 80% 80%,rgba(131,220,255,.14),transparent 22%),
+        linear-gradient(135deg,#090914,#141225,#1f1838,#261b46);
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background-image:
+        radial-gradient(2px 2px at 10% 20%,rgba(255,255,255,.7),transparent),
+        radial-gradient(2px 2px at 60% 30%,rgba(255,255,255,.45),transparent),
+        radial-gradient(1.5px 1.5px at 80% 75%,rgba(255,255,255,.35),transparent);
+      animation:starFloat 15s linear infinite alternate;
+      z-index:0;
+    }
+
+    @keyframes starFloat{to{transform:translateY(-18px)}}
+
+    .glow{
+      position:fixed;
+      border-radius:50%;
+      filter:blur(95px);
+      opacity:.28;
+      pointer-events:none;
+      z-index:0;
+      animation:blob 12s ease-in-out infinite alternate;
+    }
+    .glow.one{width:320px;height:320px;background:#ff75b7;top:-40px;left:-30px}
+    .glow.two{width:360px;height:360px;background:#8b73ff;right:-40px;bottom:-30px}
+    .glow.three{width:260px;height:260px;background:#73d8ff;top:45%;left:40%}
+    @keyframes blob{to{transform:translate(22px,-18px) scale(1.08)}}
+
+    .opening-screen,.lock-screen{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+
+    .opening-screen{
+      z-index:9999;
+      background:linear-gradient(135deg,#06060a,#151222,#24183a);
+      transition:1s ease;
+    }
+
+    .opening-screen.hide,.lock-screen.hide{
+      opacity:0;
+      visibility:hidden;
+    }
+
+    .glass,.opening-box,.lock-card,.card,.modal-content{
+      background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.06));
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(20px);
+    }
+
+    .opening-box{
+      max-width:700px;
+      text-align:center;
+      border-radius:30px;
+      padding:38px 28px;
+      animation:fadeUp .8s ease;
+    }
+
+    h1,h2,h3,.title,.tab-title,.fav-title{
+      font-family:"Cormorant Garamond",serif;
+    }
+
+    .opening-box h1{
+      font-size:clamp(2.5rem,6vw,5rem);
+      background:linear-gradient(90deg,#fff,var(--rose),var(--lav),var(--gold));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .opening-box p,.card p,.desc,.modal-content p,.tab-section p,.fav-card p{color:var(--muted);line-height:1.8}
+
+    .line{
+      width:200px;height:2px;margin:18px auto 0;
+      background:linear-gradient(90deg,transparent,#fff,transparent);
+      animation:pulse 1.5s infinite;
+    }
+    @keyframes pulse{50%{transform:scaleX(1.08);opacity:1}0%,100%{opacity:.4}}
+
+    .lock-screen{
+      z-index:999;
+      background:rgba(0,0,0,.76);
+      backdrop-filter:blur(14px);
+      transition:.6s ease;
+    }
+
+    .lock-card{
+      width:min(430px,100%);
+      border-radius:28px;
+      padding:34px 26px;
+      text-align:center;
+      animation:fadeUp .8s ease;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:10px 16px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      color:#ffe6f2;
+      font-size:.9rem;
+    }
+
+    .lock-card h2{font-size:2.2rem;margin:12px 0 10px}
+    .lock-card input{
+      width:100%;
+      padding:14px 16px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.07);
+      color:white;
+      outline:none;
+      margin:15px 0 8px;
+      font-size:1rem;
+    }
+
+    .error-msg{
+      min-height:24px;
+      margin-bottom:12px;
+      color:#ffb8cf;
+      font-weight:800;
+    }
+
+    .shake{animation:shake .35s ease}
+    @keyframes shake{
+      25%{transform:translateX(-8px)}
+      50%{transform:translateX(8px)}
+      75%{transform:translateX(-5px)}
+    }
+
+    .btn,.tab-btn,.message-open-btn{
+      border:0;
+      cursor:pointer;
+      border-radius:999px;
+      padding:13px 22px;
+      color:#fff;
+      font-weight:800;
+      background:linear-gradient(135deg,#33204a,#5a3680,#8b56c7);
+      box-shadow:0 12px 30px rgba(0,0,0,.28);
+      transition:.3s ease;
+    }
+    .btn:hover,.tab-btn:hover,.message-open-btn:hover{transform:translateY(-3px) scale(1.02)}
+    .secondary{background:linear-gradient(135deg,#204052,#2c6982,#4091a8)}
+
+    .main-app{
+      display:none;
+      position:relative;
+      z-index:2;
+      width:min(1240px,calc(100% - 24px));
+      margin:20px auto;
+      border-radius:34px;
+      overflow:hidden;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.04));
+      box-shadow:var(--shadow);
+      animation:fadeUp 1s ease;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      padding:18px 22px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800}
+    .dot{
+      width:12px;height:12px;border-radius:50%;
+      background:linear-gradient(135deg,var(--pink),var(--lav),var(--gold));
+      box-shadow:0 0 22px rgba(255,119,183,.6);
+    }
+
+    .hero{display:grid;grid-template-columns:1.05fr .95fr}
+    .left,.right{padding:48px}
+    .left h1{
+      font-size:clamp(3rem,6vw,5.8rem);
+      line-height:.95;
+      margin:18px 0;
+    }
+
+    .gradient{
+      background:linear-gradient(90deg,#fff,var(--rose),var(--lav),#96f0d9,var(--gold));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .desc{max-width:580px;margin-bottom:24px}
+    .card{
+      border-radius:28px;
+      padding:24px;
+      transition:.35s ease;
+      margin-bottom:24px;
+    }
+    .card:hover{transform:translateY(-4px)}
+
+    .title{font-size:2.1rem;margin-bottom:12px}
+    .actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:20px}
+
+    .countdown-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:16px;
+      margin-top:16px;
+    }
+    .time-box{
+      text-align:center;
+      padding:22px 12px;
+      border-radius:22px;
+      background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.05));
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .time-box h3{font-size:clamp(2rem,4vw,3.2rem)}
+    .time-box p{text-transform:uppercase;font-size:.8rem;color:#f3e7ff;letter-spacing:1.3px}
+
+    .section,.tabs-wrap{padding:0 48px 26px}
+
+    .grid3,.tab-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+      margin-top:16px;
+    }
+
+    .small-card,.fav-card{
+      padding:22px;
+      border-radius:22px;
+      background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.05));
+      border:1px solid rgba(255,255,255,.12);
+      transition:.3s ease;
+    }
+
+    .small-card:hover,.fav-card:hover{transform:translateY(-4px)}
+    .small-card h3{font-size:1.8rem;margin-bottom:10px}
+    .small-card p{color:var(--muted);line-height:1.8}
+
+    .tabs-wrap{margin-top:6px}
+    .tab-buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .tab-btn{
+      border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.04));
+      box-shadow:none;
+      backdrop-filter:blur(12px);
+    }
+    .tab-btn.active{
+      background:linear-gradient(135deg,rgba(255,116,181,.34),rgba(183,156,255,.30),rgba(125,211,252,.20));
+      border-color:rgba(255,255,255,.22);
+      box-shadow:0 10px 24px rgba(0,0,0,.22);
+    }
+    .tab-section{
+      display:none;
+      border-radius:28px;
+      padding:24px;
+      margin-bottom:24px;
+      background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.06));
+      border:1px solid var(--border);
+      box-shadow:var(--soft);
+      backdrop-filter:blur(20px);
+      animation:fadeUp .55s ease;
+    }
+    .tab-section.active{display:block}
+    .tab-title{font-size:2.1rem;margin-bottom:10px}
+    .fav-meta{
+      font-size:.82rem;
+      color:#ffdceb;
+      letter-spacing:1.2px;
+      text-transform:uppercase;
+      margin-bottom:10px;
+    }
+    .fav-title{font-size:1.8rem;margin-bottom:10px}
+
+    .polaroid{
+      background:#fff;
+      color:#222;
+      padding:12px 12px 20px;
+      border-radius:14px;
+      transform:rotate(-2deg);
+      box-shadow:0 18px 35px rgba(0,0,0,.35);
+      transition:.35s ease;
+    }
+    .polaroid:nth-child(even){transform:rotate(2deg)}
+    .polaroid:hover{transform:rotate(0) translateY(-8px) scale(1.02)}
+    .polaroid img{
+      width:100%;
+      height:230px;
+      object-fit:cover;
+      border-radius:10px;
+      background:#ddd;
+    }
+    .polaroid p{
+      color:#222;
+      text-align:center;
+      font-weight:900;
+      margin-top:10px;
+    }
+
+    .music-control{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+    .music-control input{accent-color:#ff74b5}
+
+    .frog-box{text-align:center}
+    .frog-btn{font-size:2rem;padding:14px 28px}
+
+    .hidden-letter{display:none;margin:0 48px 26px}
+    .hidden-letter.active{display:block;animation:fadeUp .7s ease}
+
+    .letter-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin-top:18px;
+    }
+
+    .message-btn,.message-open-btn{
+      margin-top:14px;
+      background:linear-gradient(135deg,#ff76b8,#b17cff,#76d9ff);
+    }
+
+    .modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      background:rgba(0,0,0,.66);
+      backdrop-filter:blur(14px);
+      z-index:10000;
+    }
+    .modal.active{display:flex}
+    .modal-content{
+      width:min(720px,100%);
+      border-radius:28px;
+      padding:28px;
+      animation:pop .35s ease;
+    }
+    .modal-title{
+      font-size:2.2rem;
+      margin-bottom:10px;
+      background:linear-gradient(90deg,#fff,var(--rose),var(--lav),var(--sky));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .welcome-popup{
+      position:fixed;
+      top:24px;
+      left:50%;
+      transform:translateX(-50%);
+      padding:16px 24px;
+      border-radius:999px;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.18);
+      backdrop-filter:blur(18px);
+      z-index:99999;
+      box-shadow:var(--shadow);
+      display:none;
+      font-weight:900;
+    }
+
+    .petals span,.trail-heart{
+      position:fixed;
+      pointer-events:none;
+      z-index:9999;
+    }
+    .petals span{
+      top:-30px;
+      animation:fall linear infinite;
+    }
+    @keyframes fall{
+      to{transform:translateY(110vh) rotate(360deg);opacity:.2}
+    }
+
+    .footer{
+      text-align:center;
+      color:rgba(255,255,255,.58);
+      padding:0 18px 24px;
+      font-size:.86rem;
+    }
+
+    @keyframes fadeUp{
+      from{opacity:0;transform:translateY(18px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+    @keyframes pop{
+      from{opacity:0;transform:scale(.92) translateY(16px)}
+      to{opacity:1;transform:scale(1) translateY(0)}
+    }
+
+    @media(max-width:980px){
+      .hero,.grid3,.letter-grid,.tab-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:700px){
+      .left,.right,.section,.tabs-wrap{padding-left:18px!important;padding-right:18px!important}
+      .left,.right{padding-top:24px;padding-bottom:24px}
+      .hidden-letter{margin-left:18px;margin-right:18px}
+      .topbar{flex-direction:column;align-items:flex-start}
+      .btn,.tab-btn,.message-open-btn{padding:11px 16px;font-size:.9rem}
+      .card,.tab-section{padding:20px}
+      .title,.tab-title{font-size:1.9rem}
+      .polaroid img{height:260px}
+    }
+    @media(max-width:520px){
+      .countdown-grid{grid-template-columns:1fr}
+      .tab-btn{width:100%}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="glow one"></div>
+  <div class="glow two"></div>
+  <div class="glow three"></div>
+
+  <div class="petals" id="petals"></div>
+  <div class="welcome-popup" id="welcomePopup">Welcome Tejuuu 💖✨</div>
+
+  <div class="opening-screen" id="openingScreen">
+    <div class="opening-box glass">
+      <h1>Opening something special… ✨</h1>
+      <p>A little surprise made forr herrrr!!</p>
+      <div class="line"></div>
+    </div>
+  </div>
+
+  <div class="lock-screen" id="lockScreen">
+    <div class="lock-card">
+      <div class="badge">Surprise 💌</div>
+      <h2>Only Tejuuuuuu Donnnnnnnnn can open 💖</h2>
+      <p>Enter password to unlock this little birthday world.</p>
+      <input type="password" id="passwordInput" placeholder="Hint - Apka koi ek namee">
+      <div class="error-msg" id="errorMsg"></div>
+      <button class="btn" onclick="unlockSite()">Unlock</button>
+    </div>
+  </div>
+
+  <main class="main-app" id="mainApp">
+    <div class="topbar">
+      <div class="brand"><span class="dot"></span><span>Made for someone truly special</span></div>
+      <div class="badge">Medhak's birthday countdown ✨</div>
+    </div>
+
+    <section class="hero">
+      <div class="left">
+        <div class="badge">A little universe made only for her</div>
+        <h1>Waiting for <br><span class="gradient" id="headlineName">Her Birthday</span></h1>
+        <p class="desc">
+          Some people are not just part of life — they quietly become the reason some days feel softer, prettier, and worth remembering. This page is for the girl who deserves more than a normal wish. She deserves something made with feeling and efforts!!
+        </p>
+
+        <div class="card">
+          <div class="title">A tiny note before the day arrives</div>
+          <p>I wanted to make something different — not just a message, but a small corner of the internet that waits for <span id="inlineName">her</span> beautifully. Until your birthday arrives, this page will keep counting every month, every day, every hour, every minuteee andd every second 🌷</p>
+        </div>
+
+        <div class="actions">
+          <button class="btn" onclick="toggleLetter()">Open hidden letter 💌</button>
+          <button class="btn secondary" onclick="toggleMusic()">Play / Pause 🎧</button>
+          <button class="btn" onclick="flowerBlast()">Flower Blast 🌸</button>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="card">
+          <div class="title">Countdown to 19 July</div>
+          <div class="countdown-grid">
+            <div class="time-box"><h3 id="days">00</h3><p>Days</p></div>
+            <div class="time-box"><h3 id="hours">00</h3><p>Hours</p></div>
+            <div class="time-box"><h3 id="minutes">00</h3><p>Minutes</p></div>
+            <div class="time-box"><h3 id="seconds">00</h3><p>Seconds</p></div>
+          </div>
+          <p style="margin-top:16px;text-align:center">Until the day the world became a little prettier, warmer, and brighter. 💗</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="tabs-wrap">
+      <div class="tab-buttons">
+        <button class="tab-btn active" onclick="showTab('tabFav', this)">Fav Things</button>
+        <button class="tab-btn" onclick="showTab('tabVibe', this)">Her Vibe</button>
+      </div>
+
+      <div class="tab-section active" id="tabFav">
+        <div class="tab-title">Her Favorite Things</div>
+        <p>Small little details that make the page feel more personal and more about her.</p>
+
+        <div class="tab-grid">
+          <div class="fav-card">
+            <div class="fav-meta">Fav • Color</div>
+            <div class="fav-title">Black 🖤</div>
+            <p>Not everyone carries black this effortlessly… but on her, it looks classy, calm, elegant, and dangerously beautiful.</p>
+          </div>
+
+          <div class="fav-card">
+            <div class="fav-meta">Fav • Aesthetic</div>
+            <div class="fav-title">Soft + Kind</div>
+            <p>She has that expensive, soft, and pretty vibe that feels simple but unforgettable at the same time.</p>
+          </div>
+
+          <div class="fav-card">
+            <div class="fav-meta">Fav • Energy</div>
+            <div class="fav-title">Natureee ✨</div>
+            <p>Some people make places feel safe just by being there. She carries that kind of peaceful energy.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-section" id="tabVibe">
+        <div class="tab-title">Her Vibe</div>
+        <p>The little compliments and feelings that make this surprise more heartfelt.</p>
+
+        <div class="tab-grid">
+          <div class="fav-card">
+            <div class="fav-meta">Vibe • 01</div>
+            <div class="fav-title">Pretty Aura</div>
+            <p>She has that naturally beautiful vibe that does not even need effort to stand out.</p>
+          </div>
+
+          <div class="fav-card">
+            <div class="fav-meta">Vibe • 02</div>
+            <div class="fav-title">Soft Heart</div>
+            <p>Her softness is not weak — it is the kind that makes people feel warm, seen, and comfortable.</p>
+          </div>
+
+          <div class="fav-card">
+            <div class="fav-meta">Vibe • 03</div>
+            <div class="fav-title">Memorable Smile</div>
+            <p>Some smiles are cute, some are pretty — hers is the kind that stays in the mind after the moment ends.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <div class="title">Photo Memories 📸</div>
+        <p>Replace these photos with real memories.</p>
+        <div class="grid3">
+          <div class="polaroid"><img src="photo1.jpg" alt="Her smile"><p>Her smile 💗</p></div>
+          <div class="polaroid"><img src="photo2.jpg" alt="Her vibe"><p>Her vibe ✨</p></div>
+          <div class="polaroid"><img src="photo3.jpg" alt="Best memory"><p>Donnnnnn 🌸</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">Little Messages ✨</div>
+        <div class="grid3">
+          <div class="small-card">
+            <h3>For your smile 💗</h3>
+            <p>A tiny note about the way your smile stays in people's hearts.</p>
+            <button class="message-open-btn" onclick="openMessage('For your smile 💗', 'Your smile is the kind that changes the mood of a moment. It is soft, pretty, and memorable in a way that lingers even after the moment is gone.')">Tap to open</button>
+          </div>
+
+          <div class="small-card">
+            <h3>For your vibe ✨</h3>
+            <p>A little message for the calm, pretty, and unforgettable energy you carry.</p>
+            <button class="message-open-btn" onclick="openMessage('For your vibe ✨', 'You have that rare vibe that feels both comforting and beautiful at the same time. Not loud, not forced — just naturally lovely.')">Tap to open</button>
+          </div>
+
+          <div class="small-card">
+            <h3>For your heart 🌸</h3>
+            <p>Something soft for the warmth and kindness you carry.</p>
+            <button class="message-open-btn" onclick="openMessage('For your heart 🌸', 'The softness in your heart shows in the way you exist. Some people feel nice for a second, but you feel gentle and real in a way that stays.')">Tap to open</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">Music Corner 🎧</div>
+        <p><b>Khat</b> — A little musical corner that matches her vibe and the feeling of this page. But she is likeee thee Perfect song🩵</p>
+        <div class="music-control">
+          <button class="btn secondary" onclick="toggleMusic()">Play / Pause 🎶</button>
+          <label>Volume</label>
+          <input type="range" min="0" max="1" step="0.1" value="0.7" onchange="setVolume(this.value)">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">Compliment Generator 💖</div>
+        <p id="complimentText">Tap the button and get a sweet little line.</p>
+        <div class="actions">
+          <button class="btn" onclick="generateCompliment()">Tell me something nice ✨</button>
+        </div>
+      </div>
+
+      <div class="card frog-box">
+        <div class="title">Secret Frog 🐸</div>
+        <p>Tap frog 5 times for a hidden surprise.</p>
+        <br>
+        <button class="btn frog-btn" onclick="frogTap()">🐸</button>
+      </div>
+    </section>
+
+    <section class="hidden-letter" id="hiddenLetter">
+      <div class="card">
+        <div class="title">Choose a hidden letter 💌</div>
+        <p>Tap any one letter and open it separately.</p>
+        <div class="letter-grid">
+          <button class="btn" onclick="openLetter(1)">Letter 1 💌</button>
+          <button class="btn" onclick="openLetter(2)">Letter 2 🌸</button>
+          <button class="btn" onclick="openLetter(3)">Letter 3 💖</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="modal" id="messageModal">
+      <div class="modal-content">
+        <div class="modal-title" id="messageModalTitle">A little message</div>
+        <p id="messageModalText">Message content</p>
+        <br>
+        <button class="btn secondary" onclick="closeMessage()">Close 💖</button>
+      </div>
+    </div>
+
+    <div class="footer"><h3>Happyyyy Birthdayyy in advanceee Tejuuuuu Donnnnn !! Aur Soryyyyyy mere se koi gltiiii huiiii ho to maaf kariyega !! Aaj tak mere se koi bhi gltiii huiii hainnn unsabke liye bhi sorrryyy !! Apko isme kuch bura ya khrab lagaa ho to maaaf kriyegaa !! Gussa mat hoiyegaa !! Sorrrrryyyy 😁</h3></div>
+  </main>
+
+  <audio id="bgMusic" loop>
+    <source src="khat.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const friendName = "Tejuuuu Donnnnn urf Medhakk 🐸";
+    const password = "frogji";
+    const birthdayMonth = 6;
+    const birthdayDay = 19;
+
+    const openingScreen = document.getElementById("openingScreen");
+    const lockScreen = document.getElementById("lockScreen");
+    const mainApp = document.getElementById("mainApp");
+    const bgMusic = document.getElementById("bgMusic");
+
+    let typingText = "Tejuuuu Donnn’s Birthday…";
+    let typingIndex = 0;
+    let frogCount = 0;
+
+    document.getElementById("inlineName").textContent = friendName;
+
+    setTimeout(() => openingScreen.classList.add("hide"), 3000);
+
+    function unlockSite(){
+      const entered = document.getElementById("passwordInput").value;
+      const errorMsg = document.getElementById("errorMsg");
+      const lockCard = document.querySelector(".lock-card");
+
+      if(entered === password){
+        errorMsg.textContent = "";
+        lockScreen.classList.add("hide");
+        mainApp.style.display = "block";
+        showWelcome();
+        releaseMagic();
+        typeHeroText();
+        createPetals();
+        bgMusic.volume = .7;
+        bgMusic.play().catch(()=>{});
+      }else{
+        errorMsg.textContent = "No no, try again 🐸💔";
+        lockCard.classList.remove("shake");
+        void lockCard.offsetWidth;
+        lockCard.classList.add("shake");
+      }
+    }
+
+    function typeHeroText(){
+      const el = document.getElementById("headlineName");
+      el.textContent = typingText.slice(0, typingIndex);
+      typingIndex++;
+      if(typingIndex <= typingText.length) setTimeout(typeHeroText, 85);
+    }
+
+    function showWelcome(){
+      const pop = document.getElementById("welcomePopup");
+      pop.style.display = "block";
+      setTimeout(()=>pop.style.display="none",2400);
+    }
+
+    function toggleMusic(){
+      if(bgMusic.paused) bgMusic.play().catch(()=>{});
+      else bgMusic.pause();
+    }
+
+    function setVolume(value){
+      bgMusic.volume = value;
+    }
+
+    function toggleLetter(){
+      document.getElementById("hiddenLetter").classList.toggle("active");
+      releaseMagic();
+    }
+
+    function showTab(tabId, btn){
+      document.querySelectorAll(".tab-section").forEach(section => section.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(button => button.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      btn.classList.add("active");
+      releaseMagic();
+    }
+
+    function openMessage(title,text){
+      document.getElementById("messageModalTitle").textContent = title;
+      document.getElementById("messageModalText").textContent = text;
+      document.getElementById("messageModal").classList.add("active");
+      releaseMagic();
+    }
+
+    function closeMessage(){
+      document.getElementById("messageModal").classList.remove("active");
+    }
+
+    function openLetter(no){
+      const letters = {
+        1:{
+          title:"Letter 1 💌",
+          text: 'I don’t know how to explain it perfectly… but there’s something about you that just makes things feel softer. The way you talk, the way you smile, the way you exist — it all feels calm, warm, and genuinelyyyy beautiful. You’re not just special… you’re rare. Not everyone is perfect likeee youuuu'
+        },
+        2:{
+          title:"Letter 2 🌸",
+          text:'Some people come into life and stay normal… but then there are people like you who slowly become someone important without even trying. You make moments better without doing anything extra — just by being you.'
+        },
+        3:{
+          title:"Letter 3 💖",
+          text:'I hope you always remember one thing — you are appreciated more than you think, admired more than you know, and valued more than you realize. And honestly… the world feels a little better just because you are in it. Aurrrr mekooooo pataaa haii ki ap jo sochogeee karrrr logeeee. Bhagwannn kareeee jo ap chateee hainnn vooo ho aur sabki expectations se jadaaa hoooo. Aur apko kisi ki najar na lageeeeee.'
+        }
+      };
+      openMessage(letters[no].title, letters[no].text);
+    }
+
+    const compliments = [
+      "Your smile can make an ordinary moment feel special 💗",
+      "You have a soft and unforgettable vibe ✨",
+      "You are rare in the prettiest way 🌸",
+      "Black suits you like it was made for you 🖤",
+      "You carry kindness beautifully 💖",
+      "Your presence feels calm, warm and special 🌷",
+      "You don’t try to be special, yet you are 💖",
+      "There’s something about you that feels peaceful and real 🌸",
+      "You make everything around you feel a little more beautiful 💗",
+      "Your vibe is soft, but it leaves a strong impact 💫",
+      "You are a mix of calm, kindness and quiet strength ✨",
+      "You are not loud, yet you are deeply noticed 🌸",
+      "Aapki simplicity hi aapko sabse zyada special banati hai 💗",
+      "Aap normal nahi ho… aap wo ho jo ek baar mil jao to yaad reh jaate ho ✨"
+    ];
+
+    function generateCompliment(){
+      const random = compliments[Math.floor(Math.random()*compliments.length)];
+      document.getElementById("complimentText").textContent = random;
+      releaseMagic();
+    }
+
+    function createPetals(){
+      const petals = document.getElementById("petals");
+      if(petals.children.length > 0) return;
+
+      const icons = ["🌸","🌷","✨","💗","🩷","🌼"];
+      for(let i=0;i<28;i++){
+        const span = document.createElement("span");
+        span.textContent = icons[Math.floor(Math.random()*icons.length)];
+        span.style.left = Math.random()*100 + "vw";
+        span.style.fontSize = 14 + Math.random()*18 + "px";
+        span.style.animationDuration = 6 + Math.random()*8 + "s";
+        span.style.animationDelay = Math.random()*6 + "s";
+        petals.appendChild(span);
+      }
+    }
+
+    function heartTrail(x,y){
+      const heart = document.createElement("div");
+      heart.className = "trail-heart";
+      heart.textContent = ["💗","✨","🌸","🖤"][Math.floor(Math.random()*4)];
+      heart.style.left = x + "px";
+      heart.style.top = y + "px";
+      heart.style.fontSize = "18px";
+      heart.style.transition = "transform 1s ease, opacity 1s ease";
+      document.body.appendChild(heart);
+
+      requestAnimationFrame(()=>{
+        heart.style.transform = "translateY(-35px) scale(1.4)";
+        heart.style.opacity = "0";
+      });
+
+      setTimeout(()=>heart.remove(),1000);
+    }
+
+    document.addEventListener("mousemove", e=>{
+      if(mainApp.style.display === "block" && Math.random() > .78){
+        heartTrail(e.clientX,e.clientY);
+      }
+    });
+
+    document.addEventListener("touchmove", e=>{
+      const t = e.touches[0];
+      if(t && mainApp.style.display === "block" && Math.random() > .82){
+        heartTrail(t.clientX,t.clientY);
+      }
+    });
+
+    function frogTap(){
+      frogCount++;
+      if(frogCount >= 5){
+        frogCount = 0;
+        openMessage(
+          "Secret Frog Message 🐸💖",
+          "Happy Birthday in advance bestii… 🎂✨ kacchueeee ki trfff se  aurrrrrrrr sorrryyyyy !!"
+        );
+      }
+    }
+
+    function getNextBirthday(){
+      const now = new Date();
+      const year = now.getFullYear();
+      let target = new Date(year,birthdayMonth,birthdayDay,0,0,0);
+      if(now > target) target = new Date(year+1,birthdayMonth,birthdayDay,0,0,0);
+      return target;
+    }
+
+    function updateCountdown(){
+      const now = new Date();
+      const target = getNextBirthday();
+      const diff = target - now;
+
+      const d = Math.floor(diff/(1000*60*60*24));
+      const h = Math.floor((diff/(1000*60*60))%24);
+      const m = Math.floor((diff/(1000*60))%60);
+      const s = Math.floor((diff/1000)%60);
+
+      document.getElementById("days").textContent = String(d).padStart(2,"0");
+      document.getElementById("hours").textContent = String(h).padStart(2,"0");
+      document.getElementById("minutes").textContent = String(m).padStart(2,"0");
+      document.getElementById("seconds").textContent = String(s).padStart(2,"0");
+    }
+
+    function releaseMagic(){
+      const icons = ["💖","💗","✨","🌸","💫","🩷","🖤","💙","💜","🌷","🌹","🌼"];
+      for(let i=0;i<40;i++){
+        const el = document.createElement("div");
+        el.textContent = icons[Math.floor(Math.random()*icons.length)];
+        el.style.position = "fixed";
+        el.style.left = Math.random()*100 + "vw";
+        el.style.top = "100vh";
+        el.style.fontSize = 18 + Math.random()*26 + "px";
+        el.style.pointerEvents = "none";
+        el.style.zIndex = "99999";
+        el.style.transition = "transform 3.8s ease-out, opacity 3.8s ease-out";
+        document.body.appendChild(el);
+
+        requestAnimationFrame(()=>{
+          el.style.transform = `translateY(-${70+Math.random()*65}vh) rotate(${Math.random()*360}deg)`;
+          el.style.opacity = "0";
+        });
+
+        setTimeout(()=>el.remove(),3900);
+      }
+    }
+
+    function flowerBlast(){
+      const flowers = ["🌸","🌷","🌹","💐","🌺","🌼","🪻","💮","✨","💖"];
+      for(let i=0;i<60;i++){
+        const flower = document.createElement("div");
+        flower.textContent = flowers[Math.floor(Math.random()*flowers.length)];
+        flower.style.position = "fixed";
+        flower.style.left = Math.random()*100 + "vw";
+        flower.style.top = "100vh";
+        flower.style.fontSize = 20 + Math.random()*28 + "px";
+        flower.style.pointerEvents = "none";
+        flower.style.zIndex = "99999";
+        flower.style.transition = "transform 4.2s ease-out, opacity 4.2s ease-out";
+        document.body.appendChild(flower);
+
+        requestAnimationFrame(()=>{
+          flower.style.transform = `translateY(-${75+Math.random()*70}vh) translateX(${Math.random()*80-40}px) rotate(${Math.random()*540}deg)`;
+          flower.style.opacity = "0";
+        });
+
+        setTimeout(()=>flower.remove(),4300);
+      }
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown,1000);
+
+    document.addEventListener("keydown", e=>{
+      if(e.key === "Escape") closeMessage();
+      if(e.key === "Enter" && mainApp.style.display !== "block") unlockSite();
+    });
+  </script>
+</body>
+</html>
